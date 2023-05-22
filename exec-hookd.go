@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"time"
 )
@@ -33,14 +33,14 @@ type Duration struct {
 }
 
 func (duration *Duration) UnmarshalJSON(b []byte) error {
-	var unmarshalledJson interface{}
+	var unmarshalledJSON interface{}
 
-	err := json.Unmarshal(b, &unmarshalledJson)
+	err := json.Unmarshal(b, &unmarshalledJSON)
 	if err != nil {
 		return err
 	}
 
-	switch value := unmarshalledJson.(type) {
+	switch value := unmarshalledJSON.(type) {
 	case float64:
 		duration.Duration = time.Duration(value)
 	case string:
@@ -49,7 +49,7 @@ func (duration *Duration) UnmarshalJSON(b []byte) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("invalid duration: %#v", unmarshalledJson)
+		return fmt.Errorf("invalid duration: %#v", unmarshalledJSON)
 	}
 
 	return nil
@@ -83,7 +83,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadConfig(configfile string) {
-	data, err := ioutil.ReadFile(configfile)
+	data, err := os.ReadFile(configfile)
 	if err != nil {
 		log.Fatal(err)
 	}
