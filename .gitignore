@@ -1,3 +1,5 @@
 exec-hookd
+exec-hookd.amd64
+exec-hookd.aarch64
 exec-hookd.json
 restart_exec-hookd.sh
