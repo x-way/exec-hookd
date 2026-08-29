@@ -59,7 +59,7 @@ func runExec(e Exec) error {
 	ctx, cancel := context.WithTimeout(context.Background(), e.Timeout.Duration)
 	defer cancel()
 
-	return exec.CommandContext(ctx, e.Cmd, e.Args...).Run()
+	return exec.CommandContext(ctx, e.Cmd, e.Args...).Run() // #nosec G204 -- Cmd/Args come from the local config file, not from the incoming request
 }
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +83,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadConfig(configfile string) {
-	data, err := os.ReadFile(configfile)
+	data, err := os.ReadFile(configfile) // #nosec G304 -- path supplied via CLI flag, not attacker-controlled
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,5 +103,9 @@ func main() {
 
 	http.HandleFunc("/", requestHandler)
 
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), nil))
+	server := &http.Server{
+		Addr:              fmt.Sprintf(":%d", cfg.Port),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
