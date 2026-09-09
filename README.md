@@ -1,4 +1,5 @@
 # exec-hookd - execute commands from webhooks
+[![CircleCI](https://circleci.com/gh/x-way/exec-hookd/tree/main.svg?style=svg)](https://circleci.com/gh/x-way/exec-hookd/tree/main)
 
 exec-hookd listens for HTTP POST requests and executes pre-defined commands when a request for a matching path is received.
 
